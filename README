@@ -1,9 +1,11 @@
 This class make it easier to perform URL requests by using blocks.
 
-NOTE: blocks are a new feature introduced in OSX 10.6 and iOS 4.0. For this reason, this class is not compatible with earlier OSX and iOS versions.
+	NOTE: Blocks are a new feature introduced in OSX 10.6 and iOS 4.0.
+	      For this reason, this class is not compatible with earlier OSX and iOS versions.
 
+----------
 
-To use it, you simply have to use one of the three constructor methods, providing the NSURLRequest to perform and the blocks of code to execute on success and on error.
+To use this class, you simply have to use one of the three constructor methods, providing the NSURLRequest to perform and the blocks of code to execute on success and on error.
 
 	NSURL* url = ...
 	NSURLRequest* req = [NSURLRequest requestWithURL:url];
@@ -18,5 +20,6 @@ If you want to, you can also provide blocks of code to execute when receiving ea
 
 You may also provide a block of code to execute when the response header is received, at which stage you are able to known the expectedContentLength or the MimeType of the response (and some other headers).
 
+----------
 
 For a more detailed usage example, see the example project in the "OHURLLoader Example" folder
