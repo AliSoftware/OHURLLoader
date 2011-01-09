@@ -12,6 +12,7 @@
 @implementation OHURLLoaderAppDelegate
 
 NSString* NSStringFromBytes(long long bytes) {
+	// Format a count of bytes as a readable string
 	if (bytes == NSURLResponseUnknownLength) return @"??";
 	if (bytes > 1024*1024) return [NSString stringWithFormat:@"%ld Mb",(bytes/(1024*1024))];
 	if (bytes > 1024) return [NSString stringWithFormat:@"%ld Kb",(bytes/1024)];
@@ -39,18 +40,18 @@ NSString* NSStringFromBytes(long long bytes) {
 
 		progressView.progress = 0.f;
 		
-	} progress:^(OHURLLoader* loader, NSUInteger receivedBytesCount) {
+	} progress:^(OHURLLoader* loader, NSUInteger receivedBytes, long long expectedBytes) {
 		
 		// Receiving some data. Can be called multiple times (each time a chunk of data arrives)
 		
 		long long expectedTotal = [loader.response expectedContentLength];
 		if (expectedTotal > 0) {
 			// Compute percentage
-			float p = receivedBytesCount / (float)expectedTotal;
-			NSLog(@"[Example 1] Progress: %@ / %@ (%.1f%%)",NSStringFromBytes(receivedBytesCount),NSStringFromBytes(expectedTotal),100*p);
+			float p = receivedBytes / (float)expectedTotal;
+			NSLog(@"[Example 1] Progress: %@ / %@ (%.1f%%)",NSStringFromBytes(receivedBytes),NSStringFromBytes(expectedTotal),100*p);
 			progressView.progress = p;
 		} else {
-			NSLog(@"[Example 1] Progress: %@ received",NSStringFromBytes(receivedBytesCount));
+			NSLog(@"[Example 1] Progress: %@ received",NSStringFromBytes(receivedBytes));
 		}
 		outputTextView.text = loader.receivedString;
 		

@@ -64,9 +64,8 @@
  *	[OHURLLoader URLLoaderWithRequest:req responseReceived:^(OHURLLoader* loader, NSURLResponse* response) {
  *		NSLog(@"Expected ContentLength: %ld",[response expectedContentLength]);
  *		progressView.progress = 0.f;
- *	} progress:^(OHURLLoader* loader, NSUInteger receivedBytesCount) {
- *		long long expectedTotal = [loader.response expectedContentLength]; // warning: may be NSURLResponseUnknownLength
- *		if (expectedTotal > 0) progressView.progress = receivedBytesCount / (float)expectedTotal;
+ *	} progress:^(OHURLLoader* loader, NSUInteger receivedBytes, long long expectedBytes) {
+ *		if (expectedBytes > 0) progressView.progress = receivedBytes / (float)expectedBytes;
  *	} completion:^(OHURLLoader* loader) {
  *		progressView.progress = 1.f;
  *		NSLog(@"Download Done (%@, statusCode:%d)",url,loader.httpStatusCode);
@@ -92,7 +91,7 @@
 @private
 #if NS_BLOCKS_AVAILABLE
 	void (^_responseReceivedBlock)(OHURLLoader*,NSURLResponse*);
-	void (^_progressBlock)(OHURLLoader*,NSUInteger);
+	void (^_progressBlock)(OHURLLoader*,NSUInteger,long long);
 	void (^_completionBlock)(OHURLLoader*);
 	void (^_errorBlock)(NSError*);
 #endif
@@ -108,13 +107,13 @@
 
 +(id)URLLoaderWithRequest:(NSURLRequest*)req
 		 responseReceived:(void (^)(OHURLLoader* loader,NSURLResponse* response))responseReceivedHandler
-				 progress:(void (^)(OHURLLoader* loader,NSUInteger receivedBytesCount))progressHandler
+				 progress:(void (^)(OHURLLoader* loader,NSUInteger receivedBytes, long long expectedBytes))progressHandler
 			   completion:(void (^)(OHURLLoader* loader))completionHandler
 			 errorHandler:(void (^)(NSError* error))errorHandler;
 
 -(id)initWithRequest:(NSURLRequest*)req
 	responseReceived:(void (^)(OHURLLoader* loader,NSURLResponse* response))responseReceivedHandler
-			progress:(void (^)(OHURLLoader* loader,NSUInteger receivedBytesCount))progressHandler
+			progress:(void (^)(OHURLLoader* loader,NSUInteger receivedBytes, long long expectedBytes))progressHandler
 		  completion:(void (^)(OHURLLoader* loader))completion
 		errorHandler:(void (^)(NSError* error))errorHandler;
 

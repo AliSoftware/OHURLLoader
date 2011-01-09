@@ -41,7 +41,7 @@
 
 +(id)URLLoaderWithRequest:(NSURLRequest*)req
 		 responseReceived:(void (^)(OHURLLoader* loader,NSURLResponse* response))responseReceivedHandler
-				 progress:(void (^)(OHURLLoader* loader,NSUInteger receivedBytesCount))progressHandler
+				 progress:(void (^)(OHURLLoader* loader,NSUInteger receivedBytes, long long expectedBytes))progressHandler
 			   completion:(void (^)(OHURLLoader* loader))completionHandler
 			 errorHandler:(void (^)(NSError* error))errorHandler
 {
@@ -59,7 +59,7 @@
 
 -(id)initWithRequest:(NSURLRequest*)req
 	responseReceived:(void (^)(OHURLLoader* loader,NSURLResponse* response))responseReceivedHandler
-			progress:(void (^)(OHURLLoader* loader,NSUInteger receivedBytesCount))progressHandler
+			progress:(void (^)(OHURLLoader* loader,NSUInteger receivedBytes, long long expectedBytes))progressHandler
 		  completion:(void (^)(OHURLLoader* loader))completionHandler
 		errorHandler:(void (^)(NSError* error))errorHandler
 {
@@ -108,7 +108,7 @@
 -(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
 	[_data appendData:data];
 	if (_progressBlock) {
-		_progressBlock(self,[self.receivedData length]);
+		_progressBlock(self,[self.receivedData length],[self.response expectedContentLength]);
 	}
 }
 
