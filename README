@@ -1,4 +1,4 @@
-This class make it easier to perform URL requests by using blocks.
+This class make it easier to perform URL requests by using blocks (instead of having to use a delegate and implement delegate methds).
 
 	NOTE: Blocks are a new feature introduced in OSX 10.6 and iOS 4.0.
 	      For this reason, this class is not compatible with earlier OSX and iOS versions.
