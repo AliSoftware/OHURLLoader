@@ -16,9 +16,27 @@ To use this class, you simply have to use one of the three constructor methods, 
 		outputTextView.text = [error localizedDescription]; // Error
 	}];
 
-If you want to, you can also provide blocks of code to execute when receiving each chunk of data, to be notified of the progress of the download. This can be useful for long downloads, for example to update a progressbar on the screen.
+----------
+
+If you want to, you can also provide blocks of code to execute when receiving each chunk of data, to be notified of the progress of the download. This can be useful for long downloads, for example to update a progressbar on the screen:
 
 You may also provide a block of code to execute when the response header is received, at which stage you are able to known the expectedContentLength or the MimeType of the response (and some other headers).
+
+	NSURL* url = ...
+	NSURLRequest* req = [NSURLRequest requestWithURL:url];
+
+	[OHURLLoader URLLoaderWithRequest:req responseReceived:^(OHURLLoader* loader, NSURLResponse* response) {
+		NSLog(@"Expected ContentLength: %ld",[response expectedContentLength]);
+		progressView.progress = 0.f;
+	} progress:^(OHURLLoader* loader, NSUInteger receivedBytes, long long expectedBytes) {
+		if (expectedBytes > 0) progressView.progress = receivedBytes / (float)expectedBytes;
+	} completion:^(OHURLLoader* loader) {
+		progressView.progress = 1.f;
+		NSLog(@"Download Done (%@, statusCode:%d)",url,loader.httpStatusCode);
+		outputTextView.text = loader.receivedString;
+	} errorHandler:^(NSError* error) {
+		outputTextView.text = [error localizedDescription];
+	}];
 
 ----------
 
