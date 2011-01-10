@@ -2,7 +2,7 @@ This class make it easier to perform URL requests by using blocks (instead of ha
 
 ----------
 
-To use this class, you simply have to use one of the three constructor methods, providing the NSURLRequest to perform and the blocks of code to execute on success and on error.
+To use this class, you simply have to use the commodity constructor then call one of the two "start…" methods, providing the blocks of code to execute on success and on error.
 
 	NSURL* url = ...
 	NSURLRequest* req = [NSURLRequest requestWithURL:url];
