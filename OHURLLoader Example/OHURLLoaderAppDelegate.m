@@ -21,7 +21,31 @@ NSString* NSStringFromBytes(long long bytes) {
 
 /////////////////////////////////////////////////////////////////////////////
 
--(IBAction)startDownload:(id)sender {
+-(IBAction)simpleExample:(id)sender {
+	NSURL* url = [NSURL URLWithString:urlField.text];
+	NSURLRequest* req = [NSURLRequest requestWithURL:url];
+	
+	progressView.progress = 0.f;
+	statusCodeLabel.text = @"-";
+	outputTextView.text = @"Loading…";
+	NSLog(@"[Example 2] Starting request for %@…",url);
+	
+	OHURLLoader* loader = [OHURLLoader URLLoaderWithRequest:req];
+	[loader startRequestWithCompletion:^(NSData* receivedData, NSInteger httpStatusCode) {
+		NSLog(@"[Example 2] Download done.");
+		progressView.progress = 1.f;
+		statusCodeLabel.text = [NSString stringWithFormat:@"%d" , httpStatusCode];
+		outputTextView.text = loader.receivedString;
+	} errorHandler:^(NSError* error) {
+		NSLog(@"[Example 2] Download error! %@",error);
+		statusCodeLabel.text = @"/!\\";
+		outputTextView.text = [NSString stringWithFormat:@"[ERROR] %@",[error localizedDescription]];
+	}];
+}
+
+/////////////////////////////////////////////////////////////////////////////
+
+-(IBAction)fullExample:(id)sender {
 	[urlField resignFirstResponder];
 	NSURL* url = [NSURL URLWithString:urlField.text];
 	NSURLRequest* req = [NSURLRequest requestWithURL:url];
@@ -29,40 +53,40 @@ NSString* NSStringFromBytes(long long bytes) {
 	statusCodeLabel.text = @"-";
 	outputTextView.text = @"";
 
-	[OHURLLoader URLLoaderWithRequest:req responseReceived:^(OHURLLoader* loader, NSURLResponse* response) {
+	OHURLLoader* loader = [OHURLLoader URLLoaderWithRequest:req];
+	[loader startRequestWithResponseHandler:^(NSURLResponse* response) {
 		
 		// Response received, data is comming
 		
 		NSLog(@"[Example 1] Response received.");
 		NSLog(@"[Example 1] -- Expected Content Length: %@",NSStringFromBytes([response expectedContentLength]));
-		NSLog(@"[Example 1] -- Received MimeType: %@",[loader.response MIMEType]);
-		NSLog(@"[Example 1] -- Encoding Name: %@",[loader.response textEncodingName]);
+		NSLog(@"[Example 1] -- Received MimeType: %@",[response MIMEType]);
+		NSLog(@"[Example 1] -- Encoding Name: %@",[response textEncodingName]);
 
 		progressView.progress = 0.f;
 		
-	} progress:^(OHURLLoader* loader, NSUInteger receivedBytes, long long expectedBytes) {
+	} progress:^(NSUInteger receivedBytes, long long expectedBytes) {
 		
 		// Receiving some data. Can be called multiple times (each time a chunk of data arrives)
 		
-		long long expectedTotal = [loader.response expectedContentLength];
-		if (expectedTotal > 0) {
+		if (expectedBytes > 0) {
 			// Compute percentage
-			float p = receivedBytes / (float)expectedTotal;
-			NSLog(@"[Example 1] Progress: %@ / %@ (%.1f%%)",NSStringFromBytes(receivedBytes),NSStringFromBytes(expectedTotal),100*p);
+			float p = receivedBytes / (float)expectedBytes;
+			NSLog(@"[Example 1] Progress: %@ / %@ (%.1f%%)",NSStringFromBytes(receivedBytes),NSStringFromBytes(expectedBytes),100*p);
 			progressView.progress = p;
 		} else {
 			NSLog(@"[Example 1] Progress: %@ received",NSStringFromBytes(receivedBytes));
 		}
-		outputTextView.text = loader.receivedString;
+		outputTextView.text = loader.receivedString; // received string so far
 		
-	} completion:^(OHURLLoader* loader) {
+	} completion:^(NSData* receivedData, NSInteger httpStatusCode) {
 		
 		// All the data has arrived, we are done here
 		
 		progressView.progress = 1.f;
-		NSLog(@"[Example 1] Download Done (%@, statusCode:%d)",url,loader.httpStatusCode);
-		statusCodeLabel.text = [NSString stringWithFormat:@"%d" , loader.httpStatusCode];
-		outputTextView.text = loader.receivedString;
+		NSLog(@"[Example 1] Download Done (%@, statusCode:%d)",url,httpStatusCode);
+		statusCodeLabel.text = [NSString stringWithFormat:@"%d",httpStatusCode];
+		outputTextView.text = loader.receivedString; // receivedData interpreted as string (using response encoding)
 		
 	} errorHandler:^(NSError* error) {
 		
@@ -76,31 +100,8 @@ NSString* NSStringFromBytes(long long bytes) {
 
 /////////////////////////////////////////////////////////////////////////////
 
--(IBAction)startDownload2:(id)sender {
-	NSURL* url = [NSURL URLWithString:urlField.text];
-	NSURLRequest* req = [NSURLRequest requestWithURL:url];
-	
-	progressView.progress = 0.f;
-	statusCodeLabel.text = @"-";
-	outputTextView.text = @"Loading…";
-	NSLog(@"[Example 2] Starting request for %@…",url);
-
-	[OHURLLoader URLLoaderWithRequest:req completion:^(OHURLLoader *loader) {
-		NSLog(@"[Example 2] Download done.");
-		progressView.progress = 1.f;
-		statusCodeLabel.text = [NSString stringWithFormat:@"%d" , loader.httpStatusCode];
-		outputTextView.text = loader.receivedString;
-	} errorHandler:^(NSError *error) {
-		NSLog(@"[Example 2] Download error! %@",error);
-		statusCodeLabel.text = @"/!\\";
-		outputTextView.text = [NSString stringWithFormat:@"[ERROR] %@",[error localizedDescription]];
-	}];
-}
-
-/////////////////////////////////////////////////////////////////////////////
-
 -(BOOL)textFieldShouldReturn:(UITextField *)textField {
-	[self startDownload:nil];
+	[self fullExample:nil];
 	return NO;
 }
 

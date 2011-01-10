@@ -1,8 +1,5 @@
 This class make it easier to perform URL requests by using blocks (instead of having to use a delegate and implement delegate methds).
 
-	NOTE: Blocks are a new feature introduced in OSX 10.6 and iOS 4.0.
-	      For this reason, this class is not compatible with earlier OSX and iOS versions.
-
 ----------
 
 To use this class, you simply have to use one of the three constructor methods, providing the NSURLRequest to perform and the blocks of code to execute on success and on error.
@@ -10,10 +7,20 @@ To use this class, you simply have to use one of the three constructor methods, 
 	NSURL* url = ...
 	NSURLRequest* req = [NSURLRequest requestWithURL:url];
 
-	[OHURLLoader URLLoaderWithRequest:req completion:^(OHURLLoader *loader) {
-		outputTextView.text = loader.receivedString; // OK
+	OHURLLoader* loader = [OHURLLoader URLLoaderWithRequest:req];
+	[loader startRequestWithCompletion:^(NSData* receivedData, NSInteger httpStatusCode) {
+		NSLog(@"Download of %@ done (statusCode:%d)",url,statusCode);
+		if (httpStatusCode == 200) {
+			// Use comodity accessos receivedString that interpret the received NSData
+			// using the encoding mentionned in the received response headers, if available
+			outputTextView.text = loader.receivedString;
+		} else {
+			// Log unexpected status code
+			outputTextView.text = [NSString stringWithFormat:@"HTTP Status code: %d",httpStatusCode];
+		}
 	} errorHandler:^(NSError *error) {
-		outputTextView.text = [error localizedDescription]; // Error
+		NSLog(@"Error while downloading %@: %@",url,error);
+		outputTextView.text = [error localizedDescription];
 	}];
 
 ----------
@@ -25,14 +32,15 @@ You may also provide a block of code to execute when the response header is rece
 	NSURL* url = ...
 	NSURLRequest* req = [NSURLRequest requestWithURL:url];
 
-	[OHURLLoader URLLoaderWithRequest:req responseReceived:^(OHURLLoader* loader, NSURLResponse* response) {
+	OHURLLoader* loader = [OHURLLoader URLLoaderWithRequest:req];
+	[loader startRequestWithResponseHandler:^(NSURLResponse* response) {
 		NSLog(@"Expected ContentLength: %ld",[response expectedContentLength]);
 		progressView.progress = 0.f;
-	} progress:^(OHURLLoader* loader, NSUInteger receivedBytes, long long expectedBytes) {
+	} progress:^(NSUInteger receivedBytes, long long expectedBytes) {
 		if (expectedBytes > 0) progressView.progress = receivedBytes / (float)expectedBytes;
-	} completion:^(OHURLLoader* loader) {
+	} completion:^(NSData* receivedData, NSInteger httpStatusCode) {
 		progressView.progress = 1.f;
-		NSLog(@"Download Done (%@, statusCode:%d)",url,loader.httpStatusCode);
+		NSLog(@"Download Done (%@, statusCode:%d)",url,httpStatusCode);
 		outputTextView.text = loader.receivedString;
 	} errorHandler:^(NSError* error) {
 		outputTextView.text = [error localizedDescription];
@@ -41,3 +49,15 @@ You may also provide a block of code to execute when the response header is rece
 ----------
 
 For a more detailed usage example, see the example project in the "OHURLLoader Example" folder
+
+
+
+NOTE FOR PRE-OSX 10.6 and PRE-iOS 4.0
+	This class is primarly designed to be used with blocks, which are a new feature introduced in OSX 10.6 and iOS 4.0. 
+	Anyway, if you use earlier version of OSX/iOS, you can still use this class and listen for the NSNotifications it emits instead of using blocks.
+	In such case, be sure not to use NSNotifications and blocks at the same time (to avoid executing BOTH blocks and notification listener's code).
+	You can do this by setting the blocks to nil when using NSNotifications (or by surrounding your "addObserver:..." code by "#if NS_BLOCKS_AVAILABLE" ... "#endif" directives to avoid adding as an observer when using blocks)
+
+NOTE FOR AUTHENTICATION CHALLENGES & CREDENTIALS
+	Even if this would be a feature easy to add, the current version of this class does not handle "Authentication Challenges" (when URL requests credentials to be accessed).
+	This is a design choice to keep the class API as simple as possible (as this feature is rarely used in practice)

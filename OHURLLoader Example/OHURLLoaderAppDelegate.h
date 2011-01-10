@@ -17,7 +17,7 @@
 	IBOutlet UITextView* outputTextView;	
 }
 
--(IBAction)startDownload:(id)sender;   
--(IBAction)startDownload2:(id)sender;
+-(IBAction)simpleExample:(id)sender;
+-(IBAction)fullExample:(id)sender;   
 
 @end

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		090A33E312DA8B29000F0444 /* OHURLLoaderAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 090A33E212DA8B29000F0444 /* OHURLLoaderAppDelegate.m */; };
+		090A350712DAAEA1000F0444 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 090A350612DAAEA1000F0444 /* Icon.png */; };
 		09E75E6D12DA377900791DAD /* OHURLLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E75E6C12DA377900791DAD /* OHURLLoader.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -19,6 +20,9 @@
 /* Begin PBXFileReference section */
 		090A33E112DA8B29000F0444 /* OHURLLoaderAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OHURLLoaderAppDelegate.h; sourceTree = "<group>"; };
 		090A33E212DA8B29000F0444 /* OHURLLoaderAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OHURLLoaderAppDelegate.m; sourceTree = "<group>"; };
+		090A348612DA9D12000F0444 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = SOURCE_ROOT; };
+		090A348712DA9D12000F0444 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = ../README; sourceTree = SOURCE_ROOT; };
+		090A350612DAAEA1000F0444 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		09E75E6B12DA377900791DAD /* OHURLLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OHURLLoader.h; sourceTree = "<group>"; };
 		09E75E6C12DA377900791DAD /* OHURLLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OHURLLoader.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -91,6 +95,9 @@
 			children = (
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* OHURLLoader-Info.plist */,
+				090A350612DAAEA1000F0444 /* Icon.png */,
+				090A348612DA9D12000F0444 /* LICENSE */,
+				090A348712DA9D12000F0444 /* README */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -155,6 +162,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
+				090A350712DAAEA1000F0444 /* Icon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
